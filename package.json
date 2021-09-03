@@ -1,0 +1,24 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "description": "Chess app with  * socket.io * chess.js * chessboard.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barto14753/chess-js.git"
+  },
+  "author": "barto14753",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/barto14753/chess-js/issues"
+  },
+  "homepage": "https://github.com/barto14753/chess-js#readme",
+  "dependencies": {
+    "@chrisoakman/chessboardjs": "^1.0.0",
+    "chess.js": "^0.12.0",
+    "express": "^4.17.1"
+  }
+}
