@@ -478,6 +478,8 @@
   .chiller-theme .sidebar-footer>a:last-child {
       border-right: none;
   }
+
+  
   
   .user-image
   {
@@ -491,3 +493,110 @@
       color: rgb(218, 216, 216);
   }
   
+  .clock
+  {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .clock-time
+  {
+    width: 49%;
+    height: 100%;
+    border-radius: 10px;
+    font-size: 42px;
+    font-weight: 900;
+    text-align: center;
+    align-self: center;
+
+    border: 0.5px solid black;
+  }
+
+  .clock-focused
+  {
+    color: white;
+    background-color: grey;
+  }
+
+  .clock-wait
+  {
+    color: black;
+    background-color: white;
+  }
+
+  .game-buttons
+  {
+    text-align: center;
+  }
+
+  .game-message
+  {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 900;
+  }
+
+  .wall-games-pick
+  {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+
+  .wall-games-button
+  {
+    width: 250px;
+    height: 100px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    font-size: 32px;
+    font-weight: 800;
+    border: none;
+    outline: none;
+    background-color: rgb(199, 113, 0);
+    color:white
+
+  }
+  .wall-games-button:focus
+  {
+    outline: 0 !important;
+  }
+
+  .wall-games-button:active
+  {
+    color: rgb(199, 113, 0);
+    background-color: white;
+    border: 1px solid rgb(199, 113, 0);
+  }
+
+  .wall-games-wait
+  {
+    text-align: center;
+    
+  }
+
+  .loading:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4,end) 1200ms infinite;      
+    animation: ellipsis steps(4,end) 1200ms infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+  }
+  
+  @keyframes ellipsis {
+    to {
+      width: 25px;    
+    }
+  }
+  
+  @-webkit-keyframes ellipsis {
+    to {
+      width: 25px;    
+    }
+  }

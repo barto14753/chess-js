@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess</title>
-    <link rel="stylesheet" type="text/css" href="public/style.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="stylesheet"
       href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
       integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU"
@@ -113,13 +113,61 @@
         <!-- sidebar-wrapper  -->
         <main class="page-content">
           <div class="container-fluid">
-            <h2>Chess-App</h2>
-            <hr>
+
+            <!-- WALL CONTAINER -->
+            <div class="wall-container">
+              <h1>Chess-App</h1>
+
+              <hr>
+
+              <div class="wall-games">
+                <div class="wall-games-pick">
+                  <button class="wall-games-button">1 min</button>
+                  <button class="wall-games-button">5 min</button>
+                  <button class="wall-games-button">15 min</button>
+                </div>
+                <div class="d-none wall-games-wait">
+                  <h2 class="loading">Waiting for opponent </h2>
+                  
+                  <button class="btn btn-danger">Cancel</button>
+                </div>
+
+                <hr>
+
+                
+                
+              </div>
+            </div>
+
+
+
+            <!-- GAME CONTAINER -->
+            <div class="d-none game-container">
+
             <div class="row">
                 <div class="col-sm">
                     <div id="myBoard" style="width: 600px"></div>
                   </div>
+                  
                   <div class="col-sm">
+
+                    <div class="game-message">
+                      <p>You win!</p>
+                      <button class="btn btn-success">Rematch</button>
+                      <button class="btn btn-danger">Exit</button>
+                    </div>
+
+                    <hr>
+
+
+                    <div class="clock">
+                      <div class="clock-time clock-focused">0:00</div>
+                      <div class="clock-time clock-wait">10:00</div>
+                    </div>
+                    
+
+                    <hr>
+
                     <label>Status:</label>
                     <div id="status"></div>
 
@@ -129,16 +177,20 @@
                     <div id="pgn"></div>
 
                     <hr>
-                    <button class="btn btn-dark">Draw</button>
-                    <button class="btn btn-success">Accept Draw</button>
-                    <button class="btn btn-danger">Give up</button>
+
+                    <div class="game-buttons">
+                      <button class="btn btn-dark">Draw</button>
+                      <button class="btn btn-success">Accept Draw</button>
+                      <button class="btn btn-danger">Give up</button>
+                    </div>
+                    
                   </div>
 
-
-                
-                
             </div>
             <hr>
+
+            </div>
+            
              
           </div>
       
@@ -166,5 +218,5 @@
 <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
         integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
         crossorigin="anonymous"></script>
-<script src="public/script.js"></script>
+<script src="script.js"></script>
 </html>
