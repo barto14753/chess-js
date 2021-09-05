@@ -22,6 +22,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
+
 </head>
 <body>
     
@@ -32,7 +33,9 @@
         <nav id="sidebar" class="sidebar-wrapper">
           <div class="sidebar-content">
             <div class="sidebar-brand">
-              <a href="#">Chess-APP</a>
+              <a href="#">
+                Chess-APP
+              </a>
               <div id="close-sidebar">
                 <i class="fas fa-times"></i>
               </div>
@@ -46,7 +49,7 @@
                 <span class="user-name">John
                   <strong>Smith</strong>
                 </span>
-                <span class="user-role">Administrator</span>
+                <span class="user-role">That's you</span>
                 <span class="user-status">
                   <i class="fa fa-circle"></i>
                   <span>Online</span>
@@ -98,9 +101,9 @@
                     <img class="user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
                   alt="User picture">
                     <span>David</span>
-                    <span href="#" class="badge badge-secondary">15 min</span>
-                    <span href="#" class="badge badge-secondary">5 min</span>
-                    <span href="#" class="badge badge-danger">1 min</span>
+                    <span href="#" class="badge badge-secondary badge-sidebar">15 min</span>
+                    <span href="#" class="badge badge-secondary badge-sidebar">5 min</span>
+                    <span href="#" class="badge badge-danger badge-sidebar">1 min</span>
                   </a>
                 </li>
               </ul>
@@ -116,7 +119,7 @@
 
             <!-- WALL CONTAINER -->
             <div class="wall-container">
-              <h1>Chess-App</h1>
+              <h1><img id="brand-knight" src="img/chesspieces/wikipedia/bN.png">Chess-App</h1>
 
               <hr>
 
@@ -125,6 +128,7 @@
                   <button class="wall-games-button">1 min</button>
                   <button class="wall-games-button">5 min</button>
                   <button class="wall-games-button">15 min</button>
+                  
                 </div>
                 <div class="d-none wall-games-wait">
                   <h2 class="loading">Waiting for opponent </h2>
@@ -134,7 +138,135 @@
 
                 <hr>
 
-                
+                <div class="row">
+                  <div class="col-sm">
+                    <h2>Open challanges</h2>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Nick</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Mark</td>
+                          <td>1 min</td>
+                          <td>
+                            <button class="btn btn-success">Play</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Jacob</td>
+                          <td>5 min</td>
+                          <td>
+                            <button class="btn btn-success">Play</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Larry</td>
+                          <td>15 min</td>
+                          <td>
+                            <button class="btn btn-success">Play</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                  
+                  <div class="col-sm">
+                    <h2>Personal Invitations</h2>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Nick</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Mark</td>
+                          <td>1 min</td>
+                          <td>
+                            <button class="btn btn-danger">Cancel</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Sam</td>
+                          <td>5 min</td>
+                          <td>
+                            <button class="btn btn-success">Accept</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Ed</td>
+                          <td>15 min</td>
+                          <td>
+                            <button class="btn btn-danger">Cancel</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+
+                <hr>
+
+                <h2>Match History</h2>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Opponent</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Result</th>
+                          <th scope="col">Win Condition</th>
+                          <th scope="col">Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Mark</td>
+                          <td>1 min</td>
+                          <td class="match-result">
+                            <span class="badge badge-danger">Loss</span>
+                          </td>
+                          <td>Checkmate</td>
+                          <td>17:33:01</td>
+                        </tr>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Sam</td>
+                          <td>5 min</td>
+                          <td class="match-result">
+                            <span class="badge badge-success">Win</span>
+                          </td>
+                          <td>Resignation</td>
+                          <td>12:35:51</td>
+                        </tr>
+                        <tr>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture">Ed</td>
+                          <td>15 min</td>
+                          <td class="match-result">
+                            <span class="badge badge-dark">Draw</span>
+                          </td>
+                          <td>Pat</td>
+                          <td>10:31:33</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
                 
               </div>
             </div>
