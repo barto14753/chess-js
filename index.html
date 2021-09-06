@@ -42,12 +42,12 @@
             </div>
             <div class="sidebar-header">
               <div class="user-pic">
-                <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                <img class="img-responsive img-rounded user-photo" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
                   alt="User picture">
               </div>
               <div class="user-info">
-                <span class="user-name">John
-                  <strong>Smith</strong>
+                <span class="user-name">
+                  <strong class="username-text">Anonymous</strong>
                 </span>
                 <span class="user-role">That's you</span>
                 <span class="user-status">
@@ -71,41 +71,21 @@
             </div>
             <!-- sidebar-search  -->
             <div class="sidebar-menu">
-              <ul>
+              <ul id="sidebar-users-list">
                 <li class="header-menu">
                   <span>Online users</span>
                 </li>
-                <li>
+                <li class="d-none" id="sidebar-user-template">
                   <a href="#">
                     <img class="user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
                   alt="User picture">
-                    <span>Adam</span>
-                    <span href="#" class="badge badge-secondary">15 min</span>
-                    <span href="#" class="badge badge-secondary">5 min</span>
-                    <span href="#" class="badge badge-danger">1 min</span>
+                    <span class="sidebar-username">Adam</span>
+                    <span href="#" class="badge badge-secondary sidebar-button">15 min</span>
+                    <span href="#" class="badge badge-secondary sidebar-button">5 min</span>
+                    <span href="#" class="badge badge-secondary sidebar-button">1 min</span>
                     
                   </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <img class="user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                  alt="User picture">
-                    <span>John</span>
-                    <span href="#" class="badge badge-secondary">15 min</span>
-                    <span href="#" class="badge badge-secondary">5 min</span>
-                    <span href="#" class="badge badge-danger">1 min</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <img class="user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                  alt="User picture">
-                    <span>David</span>
-                    <span href="#" class="badge badge-secondary badge-sidebar">15 min</span>
-                    <span href="#" class="badge badge-secondary badge-sidebar">5 min</span>
-                    <span href="#" class="badge badge-danger badge-sidebar">1 min</span>
-                  </a>
-                </li>
+                
               </ul>
             </div>
             <!-- sidebar-menu  -->
