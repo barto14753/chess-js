@@ -112,7 +112,6 @@
                 </div>
                 <div class="d-none wall-games-wait">
                   <h2 class="loading">Waiting for opponent </h2>
-                  
                   <button class="btn btn-danger">Cancel</button>
                 </div>
 
@@ -129,31 +128,16 @@
                           <th scope="col">Action</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
+                      <tbody id="open-challanges">
+                        <tr class="d-none" id="wall-open-challange-template">
                           <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Mark</td>
-                          <td>1 min</td>
+                            alt="User picture"><a class="username"></a></td>
+                          <td class="type">1 min</td>
                           <td>
                             <button class="btn btn-success">Play</button>
                           </td>
                         </tr>
-                        <tr>
-                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Jacob</td>
-                          <td>5 min</td>
-                          <td>
-                            <button class="btn btn-success">Play</button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Larry</td>
-                          <td>15 min</td>
-                          <td>
-                            <button class="btn btn-success">Play</button>
-                          </td>
-                        </tr>
+
                       </tbody>
                     </table>
 
@@ -171,16 +155,16 @@
                       </thead>
                       <tbody id="personal-invitations">
                         <tr class="d-none" id="personal-invitations-template-mine">
-                          <td class="username"><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Mark</td>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture"><a class="username"></a></td>
                           <td class="match-type">1 min</td>
                           <td>
                             <button class="btn btn-danger">Cancel</button>
                           </td>
                         </tr>
                         <tr class="d-none" id="personal-invitations-template-other">
-                          <td class="username"><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Sam</td>
+                          <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture"><a class="username"></a></td>
                           <td class="match-type">5 min</td>
                           <td>
                             <button class="btn btn-success">Accept</button>

@@ -67,6 +67,16 @@ function onAcceptRequest(info)
 
 }
 
+function onSendOpenRequest(socket, info)
+{
+  socket.broadcast.emit('SEND OPEN REQUEST', info);
+}
+
+function onCancelOpenRequest(socket, info)
+{
+  socket.broadcast.emit('CANCEL OPEN REQUEST', info);
+}
+
 
 
 app.use(express.static(__dirname + '/public'));
@@ -81,7 +91,8 @@ io.on('connection', (socket) => {
     "id": null,
     "username": null,
     "joined": new Date().toLocaleTimeString(),
-    "photo": USER_IMAGES_PATH + USER_IMAGES[Math.floor(Math.random()*USER_IMAGES.length)]
+    "photo": USER_IMAGES_PATH + USER_IMAGES[Math.floor(Math.random()*USER_IMAGES.length)],
+    "is_playing": false,
   }
 
   console.log('New user connected'); 
@@ -120,6 +131,16 @@ io.on('connection', (socket) => {
   socket.on('ACCEPT REQUEST', (info) => {
     console.log("ACCEPT REQUEST", info);
     onAcceptRequest(info);
+  });
+
+  socket.on('SEND OPEN REQUEST', (info) => {
+    console.log("SEND OPEN REQUEST", info);
+    onSendOpenRequest(socket, info);
+  });
+
+  socket.on('CANCEL OPEN REQUEST', (info) => {
+    console.log("CANCEL REQUEST", info);
+    onCancelOpenRequest(socket, info);
   });
 
 });

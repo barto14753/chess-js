@@ -1,10 +1,51 @@
-
 let username = prompt("Username: ");
 if (username.length == 0) username = "Anonymous"
 
 let socket = io();
 let user;
 let users = Array();
+let myRequests = Array();
+let openRequest = null;
+
+function removeMyRequest(type, receiver_id)
+{
+  let index = myRequests.findIndex((r) => {
+    return (receiver_id == r.receiver_id && type == r.type);
+  });
+
+  if (index >= 0) myRequests.splice(index, 1);
+
+}
+
+function addMyRequest(req)
+{
+  myRequests.push(req);
+}
+
+function getIndex(user_id)
+{
+  for (let i=0; i<users.length; i++)
+  {
+    if (users[i].id == user_id) return i;
+  }
+  return -1;
+}
+
+function removeUser(user_id)
+{
+  let index = getIndex(user_id);
+  if (index >= 0) users.splice(index, 1);
+}
+
+function getType(el)
+{
+  console.log('getType', el);
+  if (el.hasClass('1-min')) return "1-min";
+  else if (el.hasClass('5-min')) return "5-min";
+  else if (el.hasClass('15-min')) return "15-min";
+  return "NONE"
+
+}
 
 
 $('.sidebar-button').click((event) => {
@@ -12,15 +53,12 @@ $('.sidebar-button').click((event) => {
 
   let id = $(event.target).parent().parent().attr("id");
   let mode = "NONE";
-  let type = "NONE";
+  let type = getType($(event.target));
 
   if ($(event.target).hasClass('badge-secondary')) mode = "SEND";
   else if ($(event.target).hasClass('badge-danger')) mode = "CANCEL";
   else if ($(event.target).hasClass('badge-success')) mode = "ACCEPT";
 
-  if ($(event.target).hasClass('1-min')) type = "1-min";
-  else if ($(event.target).hasClass('5-min')) type = "5-min";
-  else if ($(event.target).hasClass('15-min')) type = "15-min";
 
 
   let info = 
@@ -42,21 +80,24 @@ $('.sidebar-button').click((event) => {
     req.removeClass('d-none');
     req.find('.username').text(receiver.username);
     req.attr("id", receiver.id);
-    req.find('.wall-user-image').attr(receiver.photo);
+    req.find('.wall-user-image').attr("src", receiver.photo);
     req.find('.match-type').text(type);
 
     $('#personal-invitations').append(req);
 
+    addMyRequest(info);
+
   }
-  else if (mode == "CANCEL")// CANCEL
+  else if (mode == "CANCEL") // CANCEL
   {
     $(event.target).removeClass('badge-danger');
     $(event.target).addClass('badge-secondary');
 
-    $('personal-invitations').find('#' + receiver.id).remove();
+    $('#personal-invitations').find('#' + receiver.id).remove();
+    removeMyRequest(info.type, info.receiver_id);
 
   }
-  else if (mode == "ACCEPT")// CANCEL
+  else if (mode == "ACCEPT") // CANCEL
   {
     $(event.target).removeClass('badge-success');
     $(event.target).addClass('badge-secondary');
@@ -65,6 +106,75 @@ $('.sidebar-button').click((event) => {
   }
 
   socket.emit(mode + " REQUEST", info, );
+
+})
+
+$('.wall-games-button').click((event) => {
+  
+  type = getType($(event.target));
+  let info = {
+    "sender_id": user.id,
+    "type": type,
+  }
+
+  socket.emit("SEND OPEN REQUEST", info);
+
+  $('.wall-games-pick').addClass('d-none');
+  $('.wall-games-wait').removeClass('d-none');
+
+  openRequest = info.type;
+
+})
+
+$('.wall-games-wait').find(".btn").click((event) => {
+  info = {
+    "sender_id": user.id,
+  }
+
+  socket.emit("CANCEL OPEN REQUEST", info);
+  $('.wall-games-pick').removeClass('d-none');
+  $('.wall-games-wait').addClass('d-none');
+
+  openRequest = null;
+
+})
+
+// Cancel request
+$('#personal-invitations-template-mine').find(".btn").click((event) => {
+  let el = $(event.target).parent().parent();
+  let type = el.find('.match-type').text();
+
+  
+  let id = el.attr("id");
+
+  el.remove();
+  let btn = $('#sidebar-users-list').find('#' + id);
+  btn = btn.find('.' + type);
+  console.log('.' + type, btn);
+  btn.removeClass('badge-danger');
+  btn.addClass('badge-secondary');
+
+  let info = 
+  {
+    "sender_id": user.id,
+    "receiver_id": id,
+    "type": type,
+
+  }
+  removeMyRequest(info.type, info.receiver_id);
+  socket.emit("CANCEL REQUEST", info);
+
+
+})
+
+// Accept request
+$('#personal-invitations-template-other').find(".btn").click((event) => {
+  let el = $(event.target).parent().parent();
+  let type = el.find('.match-type').text();
+
+  let id = el.attr("id");
+
+  // TODO
 
 })
 
@@ -105,6 +215,8 @@ function onDeleteUser(user_id)
 {
   console.log("On delete user", user_id);
 
+  removeUser(user_id);
+
   // besides sidebar it will remove all elements with user_id (values in other columns should have user_id)
   $('#' + user_id).remove();
 }
@@ -123,10 +235,9 @@ function onNewRequest(sender, info)
   req.attr("id", sender.id);
   req.removeClass('d-none');
   req.find('.username').text(sender.username);
-  req.find('.wall-user-image').attr(sender.photo);
+  req.find('.wall-user-image').attr("src", sender.photo);
   req.find('.match-type').text(info.type);
 
-  $("#personal-invitations").append(req);
 
 
 }
@@ -142,6 +253,24 @@ function onCancelRequest(sender, info)
 
   // Personal invitations
   $('#personal-invitations').find('#' + sender.id).remove();
+}
+
+function onNewOpenRequest(sender, info)
+{
+  console.log("On cancel open request", sender, info);
+
+  let req = $('#wall-open-challange-template').clone(true);
+  req.removeClass("d-none");
+  req.attr("id", sender.id);
+  req.find('.wall-user-image').attr("src", sender.photo);
+  req.find('.username').text(sender.username)
+  req.find('.type').text(info.type);
+
+}
+
+function onCancelOpenRequest(sender, info)
+{
+  $('#open-challanges').find('#' + sender.id).remove();
 }
 
 
@@ -174,13 +303,22 @@ socket.on('DELETE USER', function(user) {
 
 socket.on("SEND REQUEST", function(info) {
   sender = getUser(info.sender_id)
-  console.log("SENDER", sender, info.sender_id);
   onNewRequest(sender, info)
 })
 
 socket.on("CANCEL REQUEST", function(info) {
   sender = getUser(info.sender_id)
   onCancelRequest(sender, info)
+})
+
+socket.on("SEND OPEN REQUEST", function(info) {
+  sender = getUser(info.sender_id)
+  onNewOpenRequest(sender, info)
+})
+
+socket.on("CANCEL OPEN REQUEST", function(info) {
+  sender = getUser(info.sender_id)
+  onCancelOpenRequest(sender, info)
 })
 
 
