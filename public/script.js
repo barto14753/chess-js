@@ -8,31 +8,69 @@ let users = Array();
 
 
 $('.sidebar-button').click((event) => {
+  console.log($(event.target));
+
   let id = $(event.target).parent().parent().attr("id");
-  let mode = ($(event.target).hasClass('badge-secondary')) ? "SEND" : "CANCEL";
+  let mode = "NONE";
+  let type = "NONE";
+
+  if ($(event.target).hasClass('badge-secondary')) mode = "SEND";
+  else if ($(event.target).hasClass('badge-danger')) mode = "CANCEL";
+  else if ($(event.target).hasClass('badge-success')) mode = "ACCEPT";
+
+  if ($(event.target).hasClass('1-min')) type = "1-min";
+  else if ($(event.target).hasClass('5-min')) type = "5-min";
+  else if ($(event.target).hasClass('15-min')) type = "15-min";
+
 
   let info = 
   {
     "sender_id": user.id,
-    "receiver_id": id
+    "receiver_id": id,
+    "type": type,
+
   }
+
+  let receiver = getUser(id);
 
   if (mode == "SEND")
   {
-    socket.emit("SEND REQUEST", info);
     $(event.target).removeClass('badge-secondary');
     $(event.target).addClass('badge-danger');
+
+    let req = $('#personal-invitations-template-mine').clone(true);
+    req.removeClass('d-none');
+    req.find('.username').text(receiver.username);
+    req.attr("id", receiver.id);
+    req.find('.wall-user-image').attr(receiver.photo);
+    req.find('.match-type').text(type);
+
+    $('#personal-invitations').append(req);
+
   }
-  else // CANCEL
+  else if (mode == "CANCEL")// CANCEL
   {
-    socket.emit("CANCEL REQUEST", info);
     $(event.target).removeClass('badge-danger');
     $(event.target).addClass('badge-secondary');
+
+    $('personal-invitations').find('#' + receiver.id).remove();
+
   }
+  else if (mode == "ACCEPT")// CANCEL
+  {
+    $(event.target).removeClass('badge-success');
+    $(event.target).addClass('badge-secondary');
+
+    //TODO
+  }
+
+  socket.emit(mode + " REQUEST", info, );
+
 })
 
 function getUser(user_id)
 {
+    console.log("get user", users);
     for (const user of users)
     {
         if (user.id === user_id) return user;
@@ -51,6 +89,9 @@ function onCreateYourself()
 function onNewUser(user)
 {
   console.log("On new user", user);
+
+  users.push(user);
+
   let newUser = $('#sidebar-user-template').clone(true);
   newUser.attr("id", user.id);
   newUser.removeClass("d-none");
@@ -68,6 +109,41 @@ function onDeleteUser(user_id)
   $('#' + user_id).remove();
 }
 
+function onNewRequest(sender, info)
+{
+  console.log("On new request", sender);
+
+  // Sidebar
+  let btn = $('#sidebar-users-list').find('#' + sender.id).find('.' + info.type);
+  btn.removeClass('badge-secondary');
+  btn.addClass('badge-success');
+
+  // Personal invitations
+  let req = $('#personal-invitations-template-other').clone(true);
+  req.attr("id", sender.id);
+  req.removeClass('d-none');
+  req.find('.username').text(sender.username);
+  req.find('.wall-user-image').attr(sender.photo);
+  req.find('.match-type').text(info.type);
+
+  $("#personal-invitations").append(req);
+
+
+}
+
+function onCancelRequest(sender, info)
+{
+  console.log("On cancel request", sender);
+
+  // Sidebar
+  let btn = $('#sidebar-users-list').find('#' + sender.id).find('.' + info.type);
+  btn.removeClass('badge-success');
+  btn.addClass('badge-secondary');
+
+  // Personal invitations
+  $('#personal-invitations').find('#' + sender.id).remove();
+}
+
 
 
 
@@ -80,20 +156,34 @@ socket.on('init', function(u, user_obj) {
       "joined": user_obj.joined,
       "photo": user_obj.photo
   }
-  socket.emit("setDetails", username, socket.id, );
+  socket.emit("SET DETAILS", username, socket.id, );
+  console.log("Sent");
   onCreateYourself();
 
   for (const user of u) onNewUser(user);
 
 });
 
-socket.on('newUser', function(user) {
+socket.on('NEW USER', function(user) {
   onNewUser(user);
 });
 
-socket.on('deleteUser', function(user) {
+socket.on('DELETE USER', function(user) {
   onDeleteUser(user.id);
 });
+
+socket.on("SEND REQUEST", function(info) {
+  sender = getUser(info.sender_id)
+  console.log("SENDER", sender, info.sender_id);
+  onNewRequest(sender, info)
+})
+
+socket.on("CANCEL REQUEST", function(info) {
+  sender = getUser(info.sender_id)
+  onCancelRequest(sender, info)
+})
+
+
 
 
 

@@ -3,9 +3,13 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const { PassThrough } = require('stream');
 const io = new Server(server);
 
+
 users = Array();
+requests = Array();
+games = Array();
 
 const USER_IMAGES_PATH = 'img/faces/';
 const USER_IMAGES = [
@@ -29,6 +33,14 @@ function getIndex(id)
   return -1;
 }
 
+function getUser(id)
+{
+  let index = getIndex(id);
+
+  if (index >= 0) return users[index];
+  return null;
+}
+
 
 function deleteUser(id)
 {
@@ -40,7 +52,20 @@ function deleteUser(id)
     console.log(users);
 }
 
+function onSendRequest(info)
+{
+  io.to(info.receiver_id).emit('SEND REQUEST', info);
+}
 
+function onCancelRequest(info)
+{
+  io.to(info.receiver_id).emit('CANCEL REQUEST', info);
+}
+
+function onAcceptRequest(info)
+{
+
+}
 
 
 
@@ -61,25 +86,40 @@ io.on('connection', (socket) => {
 
   console.log('New user connected'); 
   socket.emit('init', users, user_obj);
-  console.log(users);
+  
 
 
   socket.on('disconnect', () => {
     deleteUser(user_obj.id);
-    socket.broadcast.emit('deleteUser', user_obj)
+    socket.broadcast.emit('DELETE USER', user_obj)
     console.log("User %s disconnected", user_obj.username);
 
   });
 
-  socket.on('setDetails', (u, i) => {
+  socket.on('SET DETAILS', (u, i) => {
     user_obj.username = u;
     user_obj.id = i;
 
     users.push(user_obj);
     console.log("User set username: %s", user_obj.id, user_obj.username);
     console.log(users);
-    socket.broadcast.emit('newUser', user_obj);
+    socket.broadcast.emit('NEW USER', user_obj);
 
+  });
+
+  socket.on('SEND REQUEST', (info) => {
+    console.log("SEND REQUEST", info);
+    onSendRequest(info);
+  });
+
+  socket.on('CANCEL REQUEST', (info) => {
+    console.log("CANCEL REQUEST", info);
+    onCancelRequest(info);
+  });
+
+  socket.on('ACCEPT REQUEST', (info) => {
+    console.log("ACCEPT REQUEST", info);
+    onAcceptRequest(info);
   });
 
 });
