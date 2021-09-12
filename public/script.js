@@ -5,7 +5,7 @@ let socket = io();
 let user;
 let users = Array();
 let myRequests = Array();
-let openRequest = null;
+let openRequest = Array();
 
 function removeMyRequest(type, receiver_id)
 {
@@ -238,7 +238,7 @@ function onNewRequest(sender, info)
   req.find('.wall-user-image').attr("src", sender.photo);
   req.find('.match-type').text(info.type);
 
-
+  $('#personal-invitations').append(req);
 
 }
 
@@ -257,7 +257,7 @@ function onCancelRequest(sender, info)
 
 function onNewOpenRequest(sender, info)
 {
-  console.log("On cancel open request", sender, info);
+  console.log("On new open request", sender, info);
 
   let req = $('#wall-open-challange-template').clone(true);
   req.removeClass("d-none");
@@ -265,6 +265,8 @@ function onNewOpenRequest(sender, info)
   req.find('.wall-user-image').attr("src", sender.photo);
   req.find('.username').text(sender.username)
   req.find('.type').text(info.type);
+
+  $('#open-challanges').append(req);
 
 }
 
@@ -278,7 +280,7 @@ function onCancelOpenRequest(sender, info)
 
 // COMMUNICATION WITH SERVER
 
-socket.on('init', function(u, user_obj) {
+socket.on('init', function(u, user_obj, open_requests) {
   user = {
       "id": socket.id,
       "username": username,
@@ -286,10 +288,15 @@ socket.on('init', function(u, user_obj) {
       "photo": user_obj.photo
   }
   socket.emit("SET DETAILS", username, socket.id, );
-  console.log("Sent");
+  console.log("OPEN REQUESTS", open_requests);
   onCreateYourself();
 
-  for (const user of u) onNewUser(user);
+  for (const us of u) onNewUser(us);
+  for (const req of open_requests)
+  {
+    let sender = getUser(req.sender_id);
+    onNewOpenRequest(sender, req);
+  }
 
 });
 
@@ -302,18 +309,18 @@ socket.on('DELETE USER', function(user) {
 });
 
 socket.on("SEND REQUEST", function(info) {
-  sender = getUser(info.sender_id)
-  onNewRequest(sender, info)
+  sender = getUser(info.sender_id);
+  onNewRequest(sender, info);
 })
 
 socket.on("CANCEL REQUEST", function(info) {
-  sender = getUser(info.sender_id)
-  onCancelRequest(sender, info)
+  sender = getUser(info.sender_id);
+  onCancelRequest(sender, info);
 })
 
 socket.on("SEND OPEN REQUEST", function(info) {
-  sender = getUser(info.sender_id)
-  onNewOpenRequest(sender, info)
+  sender = getUser(info.sender_id);
+  onNewOpenRequest(sender, info);
 })
 
 socket.on("CANCEL OPEN REQUEST", function(info) {

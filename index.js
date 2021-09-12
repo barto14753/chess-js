@@ -8,7 +8,7 @@ const io = new Server(server);
 
 
 users = Array();
-requests = Array();
+open_requests = Array();
 games = Array();
 
 const USER_IMAGES_PATH = 'img/faces/';
@@ -52,6 +52,17 @@ function deleteUser(id)
     console.log(users);
 }
 
+function removeOpenRequest(info)
+{
+  for (let i=0; i<open_requests.length; i++)
+  {
+    if (open_requests[i].sender_id == info.sender_id)
+    {
+      open_requests.splice(i, 1);
+    }
+  }
+}
+
 function onSendRequest(info)
 {
   io.to(info.receiver_id).emit('SEND REQUEST', info);
@@ -69,11 +80,13 @@ function onAcceptRequest(info)
 
 function onSendOpenRequest(socket, info)
 {
+  open_requests.push(info);
   socket.broadcast.emit('SEND OPEN REQUEST', info);
 }
 
 function onCancelOpenRequest(socket, info)
 {
+  removeOpenRequest(info);
   socket.broadcast.emit('CANCEL OPEN REQUEST', info);
 }
 
@@ -95,8 +108,11 @@ io.on('connection', (socket) => {
     "is_playing": false,
   }
 
-  console.log('New user connected'); 
-  socket.emit('init', users, user_obj);
+  let my_personal_requests = Array();
+
+  console.log('New user connected');
+  console.log('Send open_requests', open_requests);
+  socket.emit('init', users, user_obj, open_requests);
   
 
 
@@ -112,7 +128,7 @@ io.on('connection', (socket) => {
     user_obj.id = i;
 
     users.push(user_obj);
-    console.log("User set username: %s", user_obj.id, user_obj.username);
+    console.log("User with set username: %s", user_obj.id, user_obj.username);
     console.log(users);
     socket.broadcast.emit('NEW USER', user_obj);
 
@@ -139,7 +155,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('CANCEL OPEN REQUEST', (info) => {
-    console.log("CANCEL REQUEST", info);
+    console.log("CANCEL OPEN REQUEST", info);
     onCancelOpenRequest(socket, info);
   });
 
