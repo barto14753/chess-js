@@ -108,7 +108,6 @@ io.on('connection', (socket) => {
     "is_playing": false,
   }
 
-  let my_personal_requests = Array();
 
   console.log('New user connected');
   console.log('Send open_requests', open_requests);

@@ -97,12 +97,13 @@ $('.sidebar-button').click((event) => {
     removeMyRequest(info.type, info.receiver_id);
 
   }
-  else if (mode == "ACCEPT") // CANCEL
+  else if (mode == "ACCEPT") // ACCEPT
   {
-    $(event.target).removeClass('badge-success');
-    $(event.target).addClass('badge-secondary');
+    // Request can be accepted when sender is not playing (button will change after proper message from server)
+    console.log();
 
     //TODO
+    
   }
 
   socket.emit(mode + " REQUEST", info, );
@@ -167,14 +168,22 @@ $('#personal-invitations-template-mine').find(".btn").click((event) => {
 
 })
 
-// Accept request
+// Accept request (only if user is not playing)
 $('#personal-invitations-template-other').find(".btn").click((event) => {
   let el = $(event.target).parent().parent();
   let type = el.find('.match-type').text();
 
   let id = el.attr("id");
 
-  // TODO
+  let info = 
+  {
+    "sender_id": user.id,
+    "receiver_id": id,
+    "type": type,
+
+  }
+
+  socket.emit("ACCEPT REQUEST", info);
 
 })
 
