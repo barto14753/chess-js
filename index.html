@@ -112,7 +112,7 @@
                 </div>
                 <div class="d-none wall-games-wait">
                   <h2 class="loading">Waiting for opponent </h2>
-                  <button class="btn btn-danger">Cancel</button>
+                  <button id="open-request-cancel" class="btn btn-danger">Cancel</button>
                 </div>
 
                 <hr>
@@ -235,7 +235,17 @@
 
             <div class="row">
                 <div class="col-sm">
+                  <div class='game-user'>
+                    <img class="game-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                            alt="User picture"><a id="game-opponent" class="game-username">Opponent</a>
+                  </div>
+                      
                     <div id="myBoard" style="width: 600px"></div>
+
+                    <div class='game-user'>
+                      <img class="game-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                              alt="User picture"><a id="game-me" class="game-username">Me</a>
+                    </div>
                   </div>
                   
                   <div class="col-sm">

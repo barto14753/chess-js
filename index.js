@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const { type } = require('os');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const { PassThrough } = require('stream');
@@ -9,7 +10,6 @@ const io = new Server(server);
 
 users = Array();
 open_requests = Array();
-games = Array();
 
 const USER_IMAGES_PATH = 'img/faces/';
 const USER_IMAGES = [
@@ -75,7 +75,31 @@ function onCancelRequest(info)
 
 function onAcceptRequest(info)
 {
+  sender = getUser(info.sender_id)
+  receiver = getUser(info.receiver_id)
 
+  if (!sender.is_playing && !receiver.is_playing)
+  {
+    sender_game = {
+      "opponent_id": info.receiver_id,
+      "type": info.type,
+    }
+
+    receiver_game = {
+      "opponent_id": info.receiver_id,
+      "type": info.type,
+    }
+
+    sender.is_playing = true;
+    receiver.is_playing = true;
+    sender.game = sender_game;
+    receiver.game = receiver_game;
+    
+
+    io.to(info.sender_id).emit('START GAME', sender_game);
+    io.to(info.receiver_id).emit('START GAME', receiver_game);
+    
+  }
 }
 
 function onSendOpenRequest(socket, info)
@@ -106,6 +130,7 @@ io.on('connection', (socket) => {
     "joined": new Date().toLocaleTimeString(),
     "photo": USER_IMAGES_PATH + USER_IMAGES[Math.floor(Math.random()*USER_IMAGES.length)],
     "is_playing": false,
+    "game": null,
   }
 
 
@@ -157,6 +182,7 @@ io.on('connection', (socket) => {
     console.log("CANCEL OPEN REQUEST", info);
     onCancelOpenRequest(socket, info);
   });
+
 
 });
 

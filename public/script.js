@@ -4,23 +4,9 @@ if (username.length == 0) username = "Anonymous"
 let socket = io();
 let user;
 let users = Array();
-let myRequests = Array();
 let openRequest = Array();
 
-function removeMyRequest(type, receiver_id)
-{
-  let index = myRequests.findIndex((r) => {
-    return (receiver_id == r.receiver_id && type == r.type);
-  });
 
-  if (index >= 0) myRequests.splice(index, 1);
-
-}
-
-function addMyRequest(req)
-{
-  myRequests.push(req);
-}
 
 function getIndex(user_id)
 {
@@ -85,7 +71,6 @@ $('.sidebar-button').click((event) => {
 
     $('#personal-invitations').append(req);
 
-    addMyRequest(info);
 
   }
   else if (mode == "CANCEL") // CANCEL
@@ -94,7 +79,6 @@ $('.sidebar-button').click((event) => {
     $(event.target).addClass('badge-secondary');
 
     $('#personal-invitations').find('#' + receiver.id).remove();
-    removeMyRequest(info.type, info.receiver_id);
 
   }
   else if (mode == "ACCEPT") // ACCEPT
@@ -127,7 +111,8 @@ $('.wall-games-button').click((event) => {
 
 })
 
-$('.wall-games-wait').find(".btn").click((event) => {
+function cancelMyOpenRequest()
+{
   info = {
     "sender_id": user.id,
   }
@@ -137,7 +122,10 @@ $('.wall-games-wait').find(".btn").click((event) => {
   $('.wall-games-wait').addClass('d-none');
 
   openRequest = null;
+}
 
+$('.wall-games-wait').find(".btn").click((event) => {
+  cancelMyOpenRequest();
 })
 
 // Cancel request
@@ -162,7 +150,6 @@ $('#personal-invitations-template-mine').find(".btn").click((event) => {
     "type": type,
 
   }
-  removeMyRequest(info.type, info.receiver_id);
   socket.emit("CANCEL REQUEST", info);
 
 
@@ -186,6 +173,27 @@ $('#personal-invitations-template-other').find(".btn").click((event) => {
   socket.emit("ACCEPT REQUEST", info);
 
 })
+
+
+$('#open-challanges').find(".btn").click((event) => {
+  let el = $(event.target).parent().parent();
+  let type = el.find('.match-type').text();
+
+  let id = el.attr("id");
+
+  let info = 
+  {
+    "sender_id": user.id,
+    "receiver_id": id,
+    "type": type,
+
+  }
+  socket.emit("ACCEPT REQUEST", info);
+
+})
+
+
+
 
 function getUser(user_id)
 {
@@ -284,6 +292,24 @@ function onCancelOpenRequest(sender, info)
   $('#open-challanges').find('#' + sender.id).remove();
 }
 
+function showBoard()
+{
+  $('.wall-container').addClass('d-none');
+  $('.game-container').removeClass('d-none');
+}
+
+function showDashboard()
+{
+  $('.wall-container').removeClass('d-none');
+  $('.game-container').addClass('d-none');
+}
+
+function onStartGame(game)
+{
+  cancelMyOpenRequest();
+  showBoard();
+}
+
 
 
 
@@ -335,6 +361,11 @@ socket.on("SEND OPEN REQUEST", function(info) {
 socket.on("CANCEL OPEN REQUEST", function(info) {
   sender = getUser(info.sender_id)
   onCancelOpenRequest(sender, info)
+})
+
+socket.on("START GAME", function(game) {
+  console.log("START GAME", game);
+  onStartGame(game);
 })
 
 
