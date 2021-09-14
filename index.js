@@ -80,14 +80,26 @@ function onAcceptRequest(info)
 
   if (!sender.is_playing && !receiver.is_playing)
   {
+    let sender_color = 'white';
+    let receiver_color = 'black';
+    if (Math.random() < 0.5)
+    {
+      sender_color = 'black';
+      receiver_color = 'white';
+    } 
+
     sender_game = {
       "opponent_id": info.receiver_id,
       "type": info.type,
+      "color": sender_color,
+      "is_open_request": info.is_open_request,
     }
 
     receiver_game = {
-      "opponent_id": info.receiver_id,
+      "opponent_id": info.sender_id,
       "type": info.type,
+      "color": receiver_color,
+      "is_open_request": info.is_open_request,
     }
 
     sender.is_playing = true;
@@ -182,6 +194,8 @@ io.on('connection', (socket) => {
     console.log("CANCEL OPEN REQUEST", info);
     onCancelOpenRequest(socket, info);
   });
+
+
 
 
 });

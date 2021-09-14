@@ -86,7 +86,6 @@ $('.sidebar-button').click((event) => {
     // Request can be accepted when sender is not playing (button will change after proper message from server)
     console.log();
 
-    //TODO
     
   }
 
@@ -155,10 +154,13 @@ $('#personal-invitations-template-mine').find(".btn").click((event) => {
 
 })
 
-// Accept request (only if user is not playing)
-$('#personal-invitations-template-other').find(".btn").click((event) => {
+function acceptRequest(event, is_open_request)
+{
+  
   let el = $(event.target).parent().parent();
   let type = el.find('.match-type').text();
+
+  console.log("Accept request", el, type);
 
   let id = el.attr("id");
 
@@ -167,33 +169,42 @@ $('#personal-invitations-template-other').find(".btn").click((event) => {
     "sender_id": user.id,
     "receiver_id": id,
     "type": type,
+    "is_open_request": is_open_request,
 
   }
 
   socket.emit("ACCEPT REQUEST", info);
+}
+
+// Accept request (only if user is not playing)
+$('#personal-invitations-template-other').find(".btn").click((event) => {
+  acceptRequest(event, false);
 
 })
 
 
 $('#open-challanges').find(".btn").click((event) => {
-  let el = $(event.target).parent().parent();
-  let type = el.find('.match-type').text();
-
-  let id = el.attr("id");
-
-  let info = 
-  {
-    "sender_id": user.id,
-    "receiver_id": id,
-    "type": type,
-
-  }
-  socket.emit("ACCEPT REQUEST", info);
-
+  acceptRequest(event, true);
 })
 
+// remove invitation which was accepted
+function removePersonalInvitation(game)
+{
+  $('#personal-invitations').find('#' + game.opponent_id).each(function () {
+    if ($(this).find(game.type).length) $(this).remove();
+  })
 
-
+  let el = $('#sidebar-users-list').find('.' + game.type);
+  if (el.hasClass('badge-success'))
+  {
+    el.removeClass('badge-success');
+  }
+  else
+  {
+    el.removeClass('badge-danger');
+  }
+  el.addClass('badge-secondary');
+}
 
 function getUser(user_id)
 {
@@ -281,11 +292,45 @@ function onNewOpenRequest(sender, info)
   req.attr("id", sender.id);
   req.find('.wall-user-image').attr("src", sender.photo);
   req.find('.username').text(sender.username)
-  req.find('.type').text(info.type);
+  req.find('.match-type').text(info.type);
 
   $('#open-challanges').append(req);
 
 }
+
+function setPlayersDetails(game)
+{
+  let opponent = getUser(game.opponent_id);
+
+  $('#game-opponent').text(opponent.username);
+  $('#game-opponent-image').attr("src", opponent.photo);
+
+  $('#game-me').text(user.username);
+  $('#game-me-image').attr("src", user.photo);
+}
+
+function setClock(game_type)
+{
+  let clocks = $('.clock-time');
+  console.log("CLOCK SET", clocks);
+  
+  if (game_type == '1-min')
+  {
+    clocks.attr("value", 60);
+    clocks.text("1:00");
+  }
+  else if (game_type == '5-min')
+  {
+    clocks.attr("value", 300);
+    clocks.text("5:00");
+  }
+  else if (game_type == '15-min')
+  {
+    clocks.attr("value", 900);
+    clocks.text("15:00");
+  }
+}
+
 
 function onCancelOpenRequest(sender, info)
 {
@@ -307,6 +352,8 @@ function showDashboard()
 function onStartGame(game)
 {
   cancelMyOpenRequest();
+  setPlayersDetails(game);
+  setClock(game.type);
   showBoard();
 }
 
