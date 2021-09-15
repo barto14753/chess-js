@@ -414,10 +414,59 @@ var game = new Chess()
 var $status = $('#status')
 var $fen = $('#fen')
 var $pgn = $('#pgn')
+var clock_started = false;
+
+var TIMESTAMP = 100; // miliseconds
+
+function getTimeFromSec(sec)
+{
+
+  let min = Math.floor(sec / 60);
+  let secs = Math.floor(sec - (min*60));
+
+  if (secs >= 10) return min.toString() + ":" + secs.toString();
+  else return min.toString() + ":0" + secs.toString();
+}
+
+function clock()
+{
+  let el = $('.clock-focused');
+  let value = el.attr("value") - (TIMESTAMP/1000);
+  el.attr("value", value);
+  el.text(getTimeFromSec(value));
+
+  if (myGame != null)
+  {
+    setTimeout(()=> {clock()}, TIMESTAMP);
+  }
+}
+
+function startClock()
+{
+  if (!clock_started)
+  {
+    clock_started = true;
+    setTimeout(() => {clock()}, TIMESTAMP);
+  }
+}
+
+function changeClock()
+{
+  let focused = $('.clock-focused');
+  let waiting = $('.clock-wait');
+
+  focused.removeClass('clock-focused');
+  focused.addClass('clock-wait');
+
+  waiting.removeClass('clock-wait');
+  waiting.addClass('clock-focused');
+}
 
 function makeMove(move)
 {
   socket.emit("MAKE MOVE", myGame, move);
+  changeClock();
+  startClock();
 }
 
 function onMakeMove(move)
@@ -429,8 +478,9 @@ function onMakeMove(move)
     promotion: 'q' // NOTE: always promote to a queen for example simplicity
   });
 
-  console.log(m);
   updateStatus();
+  changeClock();
+  startClock();
   onSnapEnd();
 }
 
