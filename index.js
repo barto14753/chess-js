@@ -126,6 +126,11 @@ function onCancelOpenRequest(socket, info)
   socket.broadcast.emit('CANCEL OPEN REQUEST', info);
 }
 
+function onMakeMove(opponent_id, move)
+{
+  io.to(opponent_id).emit('MAKE MOVE', move);
+}
+
 
 
 app.use(express.static(__dirname + '/public'));
@@ -193,6 +198,11 @@ io.on('connection', (socket) => {
   socket.on('CANCEL OPEN REQUEST', (info) => {
     console.log("CANCEL OPEN REQUEST", info);
     onCancelOpenRequest(socket, info);
+  });
+
+  socket.on('MAKE MOVE', (game, move) => {
+    console.log("MAKE MOVE", move, game, game.opponent_id);
+    onMakeMove(game.opponent_id, move);
   });
 
 
