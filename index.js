@@ -148,7 +148,7 @@ function getEndgameAlert(result, description)
     switch (description)
     {
       case "PAT": return "You draw by pat";
-      case "AGREEMENT": return "You drwa by agreement";
+      case "AGREEMENT": return "You draw by agreement";
     }
   }
   else if (result == "LOSS")
@@ -267,6 +267,11 @@ io.on('connection', (socket) => {
   socket.on('END GAME', (match) => {
     console.log("END GAME", match);
     onEndGame(match);
+  });
+
+  socket.on('OFFER DRAW', (opponent_id) => {
+    console.log("OFFER DRAW", opponent_id);
+    io.to(opponent_id).emit('OFFER DRAW');
   });
 
 

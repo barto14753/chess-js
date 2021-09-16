@@ -509,6 +509,8 @@ function onMakeMove(move)
 
 function endGame(result, description)
 {
+  if (myGame == null) return;
+
   console.log('Endgame', result, description);
   let match = {
     "sender_id": user.id,
@@ -614,6 +616,7 @@ var config = {
 
 function restartBoard(game)
 {
+  resetGameButtons();
   config.orientation = game.color;
   board = Chessboard('myBoard', config)
   updateStatus()
@@ -645,7 +648,44 @@ function onEndGame(match)
   addMatchToHistory(match);
 }
 
+$('.give-up').click(() => {
+  endGame('LOSS', 'RESIGNATION');
+});
 
+$('.offer-draw').click(() => {
+  $('.offer-draw').addClass('d-none');
+
+  if (myGame != null)
+  {
+    socket.emit("OFFER DRAW", myGame.opponent_id);
+  }
+})
+
+$('.accept-draw').click(() => {
+  endGame("DRAW", "AGREEMENT");
+})
+
+function onOfferDraw()
+{
+  if (myGame != null)
+  {
+    $('.offer-draw').addClass('d-none');
+    $('.accept-draw').removeClass('d-none');
+  }
+}
+
+function resetGameButtons()
+{
+  if ($('.offer-draw').hasClass('d-none'))
+  {
+    $('.offer-draw').removeClass('d-none');
+  }
+
+  if (!$('.accept-draw').hasClass('d-none'))
+  {
+    $('.accept-draw').addClass('d-none');
+  }
+}
 
 
 
@@ -712,5 +752,9 @@ socket.on("MAKE MOVE", function(move) {
 
 socket.on("END GAME", function(match) {
   onEndGame(match);
+});
+
+socket.on("OFFER DRAW", function() {
+  onOfferDraw();
 });
 
