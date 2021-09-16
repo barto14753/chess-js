@@ -132,6 +132,64 @@ function onMakeMove(opponent_id, move)
   io.to(opponent_id).emit('MAKE MOVE', move);
 }
 
+function getEndgameAlert(result, description)
+{
+  if (result == "WIN")
+  {
+    switch (description)
+    {
+      case "CHECKMATE": return "You win by checkmate";
+      case "RESIGNATION": return "You win by resignation";
+      case "DISCONNECT": return "You win cause rival disconnected";
+    }
+  }
+  else if (result == "DRAW")
+  {
+    switch (description)
+    {
+      case "PAT": return "You draw by pat";
+      case "AGREEMENT": return "You drwa by agreement";
+    }
+  }
+  else if (result == "LOSS")
+  {
+    switch (description)
+    {
+      case "CHECKMATE": return "You lose by checkmate";
+      case "RESIGNATION": return "You lose by resignation";
+    }
+  }
+}
+
+function onEndGame(match)
+{
+
+  sender_info = {
+    "opponent_id": match.receiver_id,
+    "type": match.type,
+    "result": match.result,
+    "description": match.description,
+    "alert": getEndgameAlert(match.result, match.description),
+    "date": new Date().toLocaleTimeString(),
+  }
+
+  let receiver_result = "WIN";
+  if (match.result == "WIN") receiver_result = "LOSS";
+
+
+
+  receiver_info = {
+    "opponent_id": match.sender_id,
+    "type": match.type,
+    "result": receiver_result,
+    "description": match.description,
+    "alert": getEndgameAlert(receiver_result, match.description),
+  }
+
+  io.to(match.sender_id).emit("END GAME", sender_info);
+  io.to(match.receiver_id).emit("END GAME", receiver_info);
+}
+
 
 
 app.use(express.static(__dirname + '/public'));
@@ -204,6 +262,11 @@ io.on('connection', (socket) => {
   socket.on('MAKE MOVE', (game, move) => {
     console.log("MAKE MOVE", move, game, game.opponent_id);
     onMakeMove(game.opponent_id, move);
+  });
+
+  socket.on('END GAME', (match) => {
+    console.log("END GAME", match);
+    onEndGame(match);
   });
 
 

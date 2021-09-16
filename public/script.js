@@ -343,6 +343,9 @@ function showBoard()
   $('.game-container').removeClass('d-none');
 }
 
+
+$('.exit-board').click(() => {showDashboard()});
+
 function showDashboard()
 {
   $('.wall-container').removeClass('d-none');
@@ -359,7 +362,29 @@ function onStartGame(game)
   showBoard();
 }
 
+function getHistoryTemplate(result)
+{
+  switch (result)
+  {
+    case "WIN": return $('#win-template');
+    case "DRAW": return $('#draw-template');
+    case "LOSS": return $('#loss-template');
+  }
+}
 
+function addMatchToHistory(match)
+{
+  let opponent = getUser(match.opponent_id);
+  let el = getHistoryTemplate(match.result).clone(true);
+  el.removeClass('d-none');
+  el.find('.wall-user-image').attr("src", opponent.photo);
+  el.find('.history-username').text(opponent.username);
+  el.find('.match-type').text(match.type);
+  el.find('.result-description').text(match.description);
+  el.find('.result-date').text(match.date);
+
+  $('#match-history').append(el);
+}
 
 
 // SIDEBAR
@@ -404,10 +429,7 @@ $("#show-sidebar").click(function() {
 
 
 
-
-
 // CHESSBOARD
-
 
 var board = null
 var game = new Chess()
@@ -467,6 +489,7 @@ function makeMove(move)
   socket.emit("MAKE MOVE", myGame, move);
   changeClock();
   startClock();
+  checkEndgame();
 }
 
 function onMakeMove(move)
@@ -483,6 +506,35 @@ function onMakeMove(move)
   startClock();
   onSnapEnd();
 }
+
+function endGame(result, description)
+{
+  console.log('Endgame', result, description);
+  let match = {
+    "sender_id": user.id,
+    "receiver_id": myGame.opponent_id,
+    "type": myGame.type,
+    "result": result,
+    "description": description
+  };
+
+  socket.emit("END GAME", match);
+}
+
+
+function checkEndgame()
+{
+  if (game.in_checkmate()) {
+    endGame("WIN", "CHECKMATE");
+  }
+
+  // draw?
+  else if (game.in_draw()) {
+    endGame("DRAW", "PAT");
+  }
+}
+
+
 
 function onDragStart (source, piece, position, orientation) {
   // do not pick up pieces if the game is over
@@ -527,12 +579,12 @@ function updateStatus () {
 
   // checkmate?
   if (game.in_checkmate()) {
-    status = 'Game over, ' + moveColor + ' is in checkmate.'
+    status = 'Game over, ' + moveColor + ' is in checkmate.';
   }
 
   // draw?
   else if (game.in_draw()) {
-    status = 'Game over, drawn position'
+    status = 'Game over, drawn position';
   }
 
   // game still on
@@ -568,8 +620,30 @@ function restartBoard(game)
 
 }
 
+function showEndGameMessage(msg)
+{
+  $('.game-buttons').addClass('d-none');
 
+  $('.game-message').find('p').text(msg);
+  $('.game-message').removeClass('d-none');
+}
 
+function hideEndGameMessage()
+{
+  $('.game-buttons').removeClass('d-none');
+
+  $('.game-message').find('p').text('');
+  $('.game-message').addClass('d-none');
+}
+
+function onEndGame(match)
+{
+  myGame = null;
+  clock_started = false;
+
+  showEndGameMessage(match.alert);
+  addMatchToHistory(match);
+}
 
 
 
@@ -634,5 +708,9 @@ socket.on("START GAME", function(game) {
 
 socket.on("MAKE MOVE", function(move) {
     onMakeMove(move);
+});
+
+socket.on("END GAME", function(match) {
+  onEndGame(match);
 });
 

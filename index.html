@@ -190,36 +190,36 @@
                           <th scope="col">Date</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
+                      <tbody id='match-history'>
+                        <tr id='loss-template' class='d-none'>
                           <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Mark</td>
-                          <td>1 min</td>
+                            alt="User picture"><a class='history-username'></a></td>
+                          <td class='match-type'>1 min</td>
                           <td class="match-result">
                             <span class="badge badge-danger">Loss</span>
                           </td>
-                          <td>Checkmate</td>
-                          <td>17:33:01</td>
+                          <td class='result-description'>Checkmate</td>
+                          <td class='result-date'>17:33:01</td>
                         </tr>
-                        <tr>
+                        <tr id='win-template' class='d-none'>
                           <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Sam</td>
-                          <td>5 min</td>
+                            alt="User picture"><a class='history-username'></a></td>
+                          <td class='match-type'>5 min</td>
                           <td class="match-result">
                             <span class="badge badge-success">Win</span>
                           </td>
-                          <td>Resignation</td>
-                          <td>12:35:51</td>
+                          <td class='result-description'>Resignation</td>
+                          <td class='result-date'>12:35:51</td>
                         </tr>
-                        <tr>
+                        <tr id='draw-template' class='d-none'>
                           <td><img class="wall-user-image" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                            alt="User picture">Ed</td>
-                          <td>15 min</td>
+                            alt="User picture"><a class='history-username'></a></td>
+                          <td class='match-type'>15 min</td>
                           <td class="match-result">
                             <span class="badge badge-dark">Draw</span>
                           </td>
-                          <td>Pat</td>
-                          <td>10:31:33</td>
+                          <td class='result-description'>Pat</td>
+                          <td class='result-date'>10:31:33</td>
                         </tr>
                       </tbody>
                     </table>
@@ -250,10 +250,9 @@
                   
                   <div class="col-sm">
 
-                    <div class="game-message">
+                    <div class="d-none game-message">
                       <p>You win!</p>
-                      <button class="btn btn-success">Rematch</button>
-                      <button class="btn btn-danger">Exit</button>
+                      <button class="btn btn-danger exit-board">Exit</button>
                     </div>
 
                     <hr>
