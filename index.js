@@ -161,8 +161,19 @@ function getEndgameAlert(result, description)
   }
 }
 
+function stopPlaying(user_id)
+{
+  let u = getUser(user_id);
+  if (u)
+  {
+    u.is_playing = false;
+  }
+}
+
 function onEndGame(match)
 {
+  stopPlaying(match.sender_id);
+  stopPlaying(match.receiver_id);
 
   sender_info = {
     "opponent_id": match.receiver_id,
@@ -276,7 +287,6 @@ io.on('connection', (socket) => {
 
 
 });
-
 
 
 server.listen(3000, () => {

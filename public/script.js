@@ -1,3 +1,4 @@
+
 let username = prompt("Username: ");
 if (username.length == 0) username = "Anonymous"
 
@@ -450,6 +451,7 @@ function getTimeFromSec(sec)
   else return min.toString() + ":0" + secs.toString();
 }
 
+
 function clock()
 {
   let el = $('.clock-focused');
@@ -461,6 +463,8 @@ function clock()
   {
     setTimeout(()=> {clock()}, TIMESTAMP);
   }
+
+  handleTimeExpiration();
 }
 
 function startClock()
@@ -614,11 +618,14 @@ var config = {
 }
 
 
-function restartBoard(game)
+function restartBoard(g)
 {
   resetGameButtons();
-  config.orientation = game.color;
-  board = Chessboard('myBoard', config)
+  resetGameMessage();
+  config.orientation = g.color;
+  board = Chessboard('myBoard', config);
+  game.reset();
+  console.log("GAME orientation", g.color);
   updateStatus()
 
 }
@@ -676,6 +683,11 @@ function onOfferDraw()
 
 function resetGameButtons()
 {
+  if ($('.game-buttons').hasClass('d-none'))
+  {
+    $('.game-buttons').removeClass('d-none');
+  }
+
   if ($('.offer-draw').hasClass('d-none'))
   {
     $('.offer-draw').removeClass('d-none');
@@ -685,6 +697,11 @@ function resetGameButtons()
   {
     $('.accept-draw').addClass('d-none');
   }
+}
+
+function resetGameMessage()
+{
+  $('.game-message').addClass('d-none');
 }
 
 
