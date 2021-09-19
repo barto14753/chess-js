@@ -451,6 +451,17 @@ function getTimeFromSec(sec)
   else return min.toString() + ":0" + secs.toString();
 }
 
+function handleTimeExpiration(turn)
+{
+  if (turn == board.orientation()[0])
+  {
+    endGame("LOSS", "TIME EXPIRATION");
+  }
+  else
+  {
+    endGame("WIN", "TIME EXPIRATION");
+  }
+}
 
 function clock()
 {
@@ -464,7 +475,10 @@ function clock()
     setTimeout(()=> {clock()}, TIMESTAMP);
   }
 
-  handleTimeExpiration();
+  if (value <= 0)
+  {
+    handleTimeExpiration(game.turn());
+  }
 }
 
 function startClock()
