@@ -377,6 +377,7 @@ function addMatchToHistory(match)
   let opponent = getUser(match.opponent_id);
   let el = getHistoryTemplate(match.result).clone(true);
   el.removeClass('d-none');
+  el.attr('id', '');
   el.find('.wall-user-image').attr("src", opponent.photo);
   el.find('.history-username').text(opponent.username);
   el.find('.match-type').text(match.type);
@@ -449,6 +450,14 @@ function getTimeFromSec(sec)
   else return min.toString() + ":0" + secs.toString();
 }
 
+function handleTimeExpiration(turn)
+{
+  if (turn == board.orientation()[0])
+  {
+    endGame("LOSS", "TIME EXPIRATION");
+  }
+
+}
 
 
 function clock(TIMESTAMP)
@@ -460,10 +469,15 @@ function clock(TIMESTAMP)
 
   let el = $('.clock-focused');
   let value = el.attr("value") - (TIMESTAMP/1000);
+
+  if (value <= 0)
+  {
+    value = 0;
+    handleTimeExpiration(game.turn());
+  }
+
   el.attr("value", value);
   el.text(getTimeFromSec(value));
-
-  handleTimeExpiration();
 }
 
 function startClock()

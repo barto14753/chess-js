@@ -151,6 +151,7 @@ function getEndgameAlert(result, description)
     {
       case "CHECKMATE": return "You win by checkmate";
       case "RESIGNATION": return "You win by resignation";
+      case "TIME EXPIRATION": return "You win on time"
       case "DISCONNECT": return "You win cause rival disconnected";
     }
   }
@@ -168,6 +169,7 @@ function getEndgameAlert(result, description)
     {
       case "CHECKMATE": return "You lose by checkmate";
       case "RESIGNATION": return "You lose by resignation";
+      case "TIME EXPIRATION": return "You lose on time"
     }
   }
 }
@@ -206,6 +208,7 @@ function onEndGame(match)
     "result": receiver_result,
     "description": match.description,
     "alert": getEndgameAlert(receiver_result, match.description),
+    "date": new Date().toLocaleTimeString(),
   }
 
   io.to(match.sender_id).emit("END GAME", sender_info);
