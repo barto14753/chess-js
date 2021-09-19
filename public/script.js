@@ -1,4 +1,3 @@
-
 let username = prompt("Username: ");
 if (username.length == 0) username = "Anonymous"
 
@@ -439,7 +438,6 @@ var $fen = $('#fen')
 var $pgn = $('#pgn')
 var clock_started = false;
 
-var TIMESTAMP = 100; // miliseconds
 
 function getTimeFromSec(sec)
 {
@@ -452,17 +450,18 @@ function getTimeFromSec(sec)
 }
 
 
-function clock()
+
+function clock(TIMESTAMP)
 {
+  if (myGame == null || !clock_started)
+  {
+    return;
+  }
+
   let el = $('.clock-focused');
   let value = el.attr("value") - (TIMESTAMP/1000);
   el.attr("value", value);
   el.text(getTimeFromSec(value));
-
-  if (myGame != null)
-  {
-    setTimeout(()=> {clock()}, TIMESTAMP);
-  }
 
   handleTimeExpiration();
 }
@@ -472,7 +471,6 @@ function startClock()
   if (!clock_started)
   {
     clock_started = true;
-    setTimeout(() => {clock()}, TIMESTAMP);
   }
 }
 
@@ -773,5 +771,9 @@ socket.on("END GAME", function(match) {
 
 socket.on("OFFER DRAW", function() {
   onOfferDraw();
+});
+
+socket.on("PING", function(TIMESTAMP) {
+  clock(TIMESTAMP);
 });
 

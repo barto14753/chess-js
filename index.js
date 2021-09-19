@@ -6,7 +6,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const { PassThrough } = require('stream');
 const io = new Server(server);
-const { setTimeout: setTimeoutPromise } = require('timers/promises');
+const PING_TIMESTAMP = 50; // miliseconds
 
 
 users = Array();
@@ -21,6 +21,17 @@ const USER_IMAGES = [
   'face5.png',
   'face6.png',
 ]
+
+
+function pingPlayers()
+{
+  io.emit("PING", PING_TIMESTAMP);
+}
+
+setInterval(pingPlayers, PING_TIMESTAMP);
+
+
+
 
 function getIndex(id)
 {
