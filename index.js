@@ -6,7 +6,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const { PassThrough } = require('stream');
 const io = new Server(server);
-const PING_TIMESTAMP = 50; // miliseconds
+const PING_TIMESTAMP = 10; // miliseconds
 
 
 users = Array();
@@ -218,13 +218,13 @@ function onEndGame(match)
 }
 
 
-function handleGameExit(match)
+function handleGameExit(user_obj, match)
 {
   console.log("handleGameExit", match);
   if (match != null)
   {
     info = {
-      "opponent": getUser(match.opponent_id),
+      "opponent": user_obj,
       "type": match.type,
       "result": "WIN",
       "description": "DISCONNECT",
@@ -262,7 +262,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     deleteUser(user_obj.id);
-    handleGameExit(user_obj.game);
+    handleGameExit(user_obj, user_obj.game);
     socket.broadcast.emit('DELETE USER', user_obj)
     console.log("User %s disconnected", user_obj.username);
 
