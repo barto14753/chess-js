@@ -25,7 +25,6 @@ function removeUser(user_id)
 
 function getType(el)
 {
-  console.log('getType', el);
   if (el.hasClass('1-min')) return "1-min";
   else if (el.hasClass('5-min')) return "5-min";
   else if (el.hasClass('15-min')) return "15-min";
@@ -35,7 +34,6 @@ function getType(el)
 
 
 $('.sidebar-button').click((event) => {
-  console.log($(event.target));
 
   let id = $(event.target).parent().parent().attr("id");
   let mode = "NONE";
@@ -138,7 +136,6 @@ $('#personal-invitations-template-mine').find(".btn").click((event) => {
   el.remove();
   let btn = $('#sidebar-users-list').find('#' + id);
   btn = btn.find('.' + type);
-  console.log('.' + type, btn);
   btn.removeClass('badge-danger');
   btn.addClass('badge-secondary');
 
@@ -160,7 +157,6 @@ function acceptRequest(event, is_open_request)
   let el = $(event.target).parent().parent();
   let type = el.find('.match-type').text();
 
-  console.log("Accept request", el, type);
 
   let id = el.attr("id");
 
@@ -208,7 +204,6 @@ function removePersonalInvitation(game)
 
 function getUser(user_id)
 {
-    console.log("get user", users);
     for (const user of users)
     {
         if (user.id === user_id) return user;
@@ -219,14 +214,12 @@ function getUser(user_id)
 
 function onCreateYourself()
 {
-  console.log("On create yourself", user);
   $('.user-photo').attr('src', user.photo);
   $('.username-text').text(user.username);
 }
 
 function onNewUser(user)
 {
-  console.log("On new user", user);
 
   users.push(user);
 
@@ -241,7 +234,6 @@ function onNewUser(user)
 
 function onDeleteUser(user_id)
 {
-  console.log("On delete user", user_id);
 
   removeUser(user_id);
 
@@ -251,7 +243,6 @@ function onDeleteUser(user_id)
 
 function onNewRequest(sender, info)
 {
-  console.log("On new request", sender);
 
   // Sidebar
   let btn = $('#sidebar-users-list').find('#' + sender.id).find('.' + info.type);
@@ -272,7 +263,6 @@ function onNewRequest(sender, info)
 
 function onCancelRequest(sender, info)
 {
-  console.log("On cancel request", sender);
 
   // Sidebar
   let btn = $('#sidebar-users-list').find('#' + sender.id).find('.' + info.type);
@@ -285,7 +275,6 @@ function onCancelRequest(sender, info)
 
 function onNewOpenRequest(sender, info)
 {
-  console.log("On new open request", sender, info);
 
   let req = $('#wall-open-challange-template').clone(true);
   req.removeClass("d-none");
@@ -312,7 +301,6 @@ function setPlayersDetails(game)
 function setClock(game_type)
 {
   let clocks = $('.clock-time');
-  console.log("CLOCK SET", clocks);
   
   if (game_type == '1-min')
   {
@@ -510,7 +498,6 @@ function makeMove(move)
 
 function onMakeMove(move)
 {
-  console.log("Make move", move);
   let m = game.move({
     from: move.from,
     to: move.to,
@@ -527,7 +514,6 @@ function endGame(result, description)
 {
   if (myGame == null) return;
 
-  console.log('Endgame', result, description);
   let match = {
     "sender_id": user.id,
     "receiver_id": myGame.opponent_id,
@@ -637,7 +623,6 @@ function restartBoard(g)
   config.orientation = g.color;
   board = Chessboard('myBoard', config);
   game.reset();
-  console.log("GAME orientation", g.color);
   updateStatus()
 
 }
@@ -730,7 +715,6 @@ socket.on('init', function(u, user_obj, open_requests) {
       "photo": user_obj.photo
   }
   socket.emit("SET DETAILS", username, socket.id, );
-  console.log("OPEN REQUESTS", open_requests);
   onCreateYourself();
 
   for (const us of u) onNewUser(us);
@@ -771,7 +755,6 @@ socket.on("CANCEL OPEN REQUEST", function(info) {
 })
 
 socket.on("START GAME", function(game) {
-  console.log("START GAME", game);
   onStartGame(game);
 });
 
