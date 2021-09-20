@@ -180,6 +180,7 @@ function stopPlaying(user_id)
   if (u)
   {
     u.is_playing = false;
+    u.game = null;
   }
 }
 
@@ -189,7 +190,7 @@ function onEndGame(match)
   stopPlaying(match.receiver_id);
 
   sender_info = {
-    "opponent_id": match.receiver_id,
+    "opponent": getUser(match.receiver_id),
     "type": match.type,
     "result": match.result,
     "description": match.description,
@@ -197,13 +198,14 @@ function onEndGame(match)
     "date": new Date().toLocaleTimeString(),
   }
 
-  let receiver_result = "WIN";
+  let receiver_result = "DRAW";
   if (match.result == "WIN") receiver_result = "LOSS";
+  else if (match.result == "LOSS") receiver_result = "WIN";
 
 
 
   receiver_info = {
-    "opponent_id": match.sender_id,
+    "opponent": getUser(match.sender_id),
     "type": match.type,
     "result": receiver_result,
     "description": match.description,
@@ -215,6 +217,23 @@ function onEndGame(match)
   io.to(match.receiver_id).emit("END GAME", receiver_info);
 }
 
+
+function handleGameExit(match)
+{
+  console.log("handleGameExit", match);
+  if (match != null)
+  {
+    info = {
+      "opponent": getUser(match.opponent_id),
+      "type": match.type,
+      "result": "WIN",
+      "description": "DISCONNECT",
+      "alert": getEndgameAlert("WIN", "DISCONNECT"),
+      "date": new Date().toLocaleTimeString(),
+    }
+    io.to(match.opponent_id).emit("END GAME", info);
+  }
+}
 
 
 app.use(express.static(__dirname + '/public'));
@@ -243,6 +262,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     deleteUser(user_obj.id);
+    handleGameExit(user_obj.game);
     socket.broadcast.emit('DELETE USER', user_obj)
     console.log("User %s disconnected", user_obj.username);
 

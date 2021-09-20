@@ -374,7 +374,7 @@ function getHistoryTemplate(result)
 
 function addMatchToHistory(match)
 {
-  let opponent = getUser(match.opponent_id);
+  let opponent = match.opponent;
   let el = getHistoryTemplate(match.result).clone(true);
   el.removeClass('d-none');
   el.attr('id', '');
