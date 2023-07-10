@@ -1,4 +1,7 @@
 # Chess-js
+[![](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)]()
+[![](https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white)]()
+[![](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)]()
 
 ## Stack
 App created with:
@@ -7,10 +10,6 @@ App created with:
 * Express.js
 * Chessboard.js
 * Chess.js
-
-
-## Demo
-Deployed on Heroku: https://barto14753-chess-app.herokuapp.com
 
 ## How it works ?
 You can set your nick, send direct and open request for 1-min, 5-min, 15 min games and check your match history.
